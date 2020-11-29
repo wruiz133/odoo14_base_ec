@@ -1,0 +1,13 @@
+<odoo>
+  <data>
+    <template id="product">
+      <t t-call="website.layout">
+        <div class="container text-center">
+          <img t-att-src="'/web/image/product.template/%s/image' % product.id"/>
+          <h1> <span t-scp="product.name"/></h1>
+          <h2> <span t-scp="product.list_price"/></h2>
+        </div>
+      </t>
+    </template>
+  </data>
+</odoo>

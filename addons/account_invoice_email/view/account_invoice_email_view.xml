@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record model="ir.ui.view" id="view_account_retention_email" >
+			<field name="name">account.retention.email</field>
+			<field name="model">account.retention</field>
+			<field name="inherit_id" ref="l10n_ec_withholding.view_account_retention_form"/>
+			<field name="arch" type="xml">
+				<button name="action_cancel" position="before">
+				<button name="action_cr_sent" type="object"
+						string="Enviar Email" class="oe_highlight" attrs="{'invisible':[('autorizado_sri','=',False)]}" groups="base.group_user" />
+				</button>			
+			</field>
+		</record>
+	</data>
+</odoo>

@@ -1,0 +1,78 @@
+<odoo>
+    <data>
+         <template id="listing">
+           <ul>
+             <li t-foreach="objects" t-as="object">
+               <a t-attf-href="#{ root }/objects/#{ object.id }">
+                 <t t-esc="object.display_name"/>
+               </a>
+             </li>
+           </ul>
+         </template>
+         <template id="object">
+           <h1><t t-esc="object.display_name"/></h1>
+           <dl>
+             <t t-foreach="object._fields" t-as="field">
+               <dt><t t-esc="field"/></dt>
+               <dd><t t-esc="object[field]"/></dd>
+             </t>
+           </dl>
+         </template>
+        <!--
+        value = 2+2
+        <t t-set="value" t-value = 2 + 2 />
+        imprime el nombre value, se aplica a funciones
+        <t t-raw="value" />
+        imprime el valor de value
+        <t t-scp="value" />
+        si es valor de campo <t t-field="odoo.campo" />
+        <t t-field="partner_id.street" />
+        condiciomal
+        <t t-if = "value ==1" >
+            <p>
+            El valor es 1
+            </p>
+        </t>
+        <t t-elif = "value ==2" >
+         <p>
+            El valor es 2
+         </p>
+        </t>
+         <t t-else = "" >
+          <p>
+            El valor es mayor a 2
+          </p>
+        </t>
+        imprime dependiendo del valor
+        <p i-if = "value == 4" t-scp = "value" />
+        bucle
+        for i = 1,6 imprime i
+        <t t-foreach = "[1,2,3,4,5,6]" t-as = "i">
+         <p t-scp= "i" />
+        </t>
+        atributos
+        <div t-att-a = "12" />
+        es lo mismo que
+        <div a = "12">
+        </div>
+        para conjuntos
+        <div t-att={'a':1,'b':2} />
+        es lo mismo que
+        <div a="1" b="2">
+        </div>
+        <div t-att= "["a","b"] /> es igual a
+        <div a=b >
+        </div>
+        llama a templates, busca en template el identificador ee id="listing"
+        <t t-call= "index" />
+        para usar jscript
+      recupera a la consola el valor de la variable
+        <t t-set="value" t-value="12">
+        <t t-js="odoo">
+            console.log("Value",odoo.value)
+        </t>
+
+
+        -->
+    </data>
+</odoo>

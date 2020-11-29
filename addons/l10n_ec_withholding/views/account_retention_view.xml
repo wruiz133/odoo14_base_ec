@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+        <!-- RETENCIONES -->
+
+    <!-- GRAPH VIEW -->
+    <record id="view_account_retention_graph" model="ir.ui.view">
+        <field name="name">account.retention.graph</field>
+        <field name="model">account.retention</field>
+        <field name="arch" type="xml">
+            <graph string="Retenciones a Proveedores" type="bar">
+                <field name="partner_id"/>
+                <field name="amount_total" operator="+"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW -->
+    <record id="view_account_retention_search" model="ir.ui.view">
+        <field name="name">account.retention.search</field>
+        <field name="model">account.retention</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="name"/>
+                <field name="invoice_id"/>
+                <group expand="1" string="Group By">
+                    <filter name="group_by_partner_id" string="Partner" context="{'group_by':'partner_id'}"/>
+                    <filter name="group_by_state" string="Estado" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- TREE VIEW -->
+    <record id="view_account_retention_tree" model="ir.ui.view">
+        <field name="name">account.retention.tree</field>
+        <field name="model">account.retention</field>
+        <field name="arch" type="xml">
+            <tree string="Retenciones" decoration-info="state=='draft'" sample="1">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="date"/>
+                <field name="invoice_id"/>
+                <field name="amount_total"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_account_retention_form_ec" model="ir.ui.view">
+        <field name="name">view.account.retention.form.ec</field>
+        <field name="model">account.retention</field>
+        <field name="arch" type="xml">
+            <form string="Retención a Proveedor">
+                <header>
+                    <button name="action_cancel"
+                            string="Anular"
+                            type="object"
+                            states="draft,done"/>
+                    <button name="button_validate"
+                            string="Validar"
+                            class="oe_highlight"
+                            type="object"
+                            states="draft"/>
+                    <button name="action_draft"
+                            string="Volver a Borrador"
+                            type="object"
+                            states="cancel"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" class="oe_inline" placeholder="001001000234768" required="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type" invisible="1"/>
+                            <field name="partner_id" select="1" options="{'no_create': True, 'no_create_edit': True}" attrs="{'required':[('to_cancel','=',False)]}"/>
+                            <field name="invoice_id"
+                                   options="{'no_create': True, 'no_create_edit': True}"
+                                   attrs="{'required':[('to_cancel','=',False)], 'invisible':[('to_cancel','=',True)]}"/>
+                        </group>
+                        <group>
+                            <field name="manual" invisible="1"/>
+                            <field name="auth_id" select="1" domain="[('in_type','=','interno')]"/>
+                            <field name="date"/>
+                            <field name="in_type"/>
+                            <field name="to_cancel"/>
+                        </group>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Impuestos">
+                            <field name="tax_ids" nolabel="1"/>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="amount_total" widget="monetary" class="oe_subtotal_footer_separator"/>
+                            </group>
+                            <separator/>
+                        </page>
+                        <page string="Info Extra">
+                            <group>
+                                <field name="in_type" attrs="{'invisible':[('in_type','=','ret_out_invoice')]}"/>
+                                <field name="invoice_id" attrs="{'invisible':[('to_cancel','=',True)]}"/>
+                                <field name="move_ret_id" attrs="{'invisible':[('in_type','=','ret_out_invoice')]}" options="{'no_open': True}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACTIONS -->
+    <record id="action_account_retention2_tree" model="ir.actions.act_window">
+        <field name="name">Retenciones a Proveedor</field>
+        <field name="res_model">account.retention</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'in_type': 'ret_in_invoice', 'type': 'in_invoice'}</field>
+        <field name="domain">[('in_type','=','ret_in_invoice')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_account_retention_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_account_retention_form_ec')})]"/>
+    </record>
+
+    <record id="action_account_retention_customer_tree" model="ir.actions.act_window">
+        <field name="name">Retenciones de Cliente</field>
+        <field name="res_model">account.retention</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'in_type': 'ret_out_invoice', 'type': 'out_invoice'}</field>
+        <field name="domain">[('in_type','=','ret_out_invoice')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_account_retention_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_account_retention_form_ec')})]"/>
+    </record>
+
+    <!-- MENUS -->
+    <menuitem action="action_account_retention2_tree"
+              id="menu_action_retention"
+              parent="account.menu_finance_payables"/>
+
+    <menuitem action="action_account_retention_customer_tree"
+              id="menu_action_retention_receivable"
+              parent="account.menu_finance_receivables"/>
+
+</odoo>

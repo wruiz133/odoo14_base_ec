@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ACCOUNT EPAYMENT TREE -->
+    <record id="view_account_epayment_tree" model="ir.ui.view">
+        <field name="name">view.account.epayment.tree</field>
+        <field name="model">account.epayment</field>
+        <field name="arch" type="xml">
+            <tree string="Claves de Contingencia" editable="top">
+                <field name="code"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

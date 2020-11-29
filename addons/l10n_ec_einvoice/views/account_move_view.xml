@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ACCOUNT MOVE FORM -->
+    <record id="view_account_move_epayment_form" model="ir.ui.view">
+        <field name="name">account.move.epayment.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_date']" position="after">
+                <field name="epayment_id" widget="selection" required="1"/>
+            </xpath>
+            <xpath expr="//button[@name='action_invoice_sent']" position="before">
+                <button name="action_generate_einvoice"
+                        type="object"
+                        attrs="{'invisible':['|',('autorizado_sri','=',True),('state','!=','posted')]}"
+                        string="Generar Doc. Electrónico"
+                        class="oe_highlight"/>
+            </xpath>
+            <xpath expr="//field[@name='auth_number']" position="after">
+                <field name="clave_acceso"/>
+                <field name="numero_autorizacion"/>
+                <field name="fecha_autorizacion"/>
+                <field name="estado_autorizacion"/>
+                <field name="ambiente"/>
+                <field name="autorizado_sri"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ACCOUNT MOVE FILTER -->
+    <record id="view_account_move_einvoice_filter" model="ir.ui.view">
+        <field name="name">account.move.einvoice.filter</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='unpaid']" position="after">
+                <filter name="einvoiced" string="Electrónicas"
+                        domain="[('autorizado_sri','=',True)]" help="Facturas electrónicas"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

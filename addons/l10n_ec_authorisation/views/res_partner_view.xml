@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- PARTNER FORM VIEW INHERIT -->
+
+   <record id="view_partner_auth_form" model="ir.ui.view">
+       <field name="name">account.partner.auth.form</field>
+       <field name="model">res.partner</field>
+       <field name="inherit_id" ref="base.view_partner_form"/>
+       <field name="arch" type="xml">
+           <notebook position="inside">
+               <page string="Autorizaciones">
+                   <field name="authorisation_ids"
+                          nolabel="1"
+                          context="{'in_type':'externo', 'default_partner_id': active_id}">
+                       <tree string="Autorizaciones" editable="top">
+                           <field name="is_electronic"/>
+                           <field name="type_id"/>
+                           <field name="name" attrs="{'invisible': [('is_electronic','=',True)], 'required': [('is_electronic','=',False)]}"/>
+                           <field name="serie_emision"/>
+                           <field name="serie_entidad"/>
+                           <field name="num_start" attrs="{'invisible': [('is_electronic','=',True)], 'required': [('is_electronic','=',False)]}"/>
+                           <field name="num_end" attrs="{'invisible': [('is_electronic','=',True)], 'required': [('is_electronic','=',False)]}"/>
+                           <field name="expiration_date" attrs="{'invisible': [('is_electronic','=',True)], 'required': [('is_electronic','=',False)]}"/>
+                       </tree>
+                    </field>
+                </page>
+           </notebook>
+        </field>
+    </record>
+
+</odoo>

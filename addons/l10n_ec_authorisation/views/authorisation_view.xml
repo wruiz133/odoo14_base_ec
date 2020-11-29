@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ACCOUNT AUTHORIZATION -->
+
+    <!-- Tree View -->
+    <record id="view_account_authorisation_tree" model="ir.ui.view">
+        <field name="name">account.auth.tree</field>
+        <field name="model">account.authorisation</field>
+        <field name="arch" type="xml">
+            <tree string="Autorizaciones del SRI">
+                <field name="type_id"/>
+                <field name="is_electronic"/>
+                <field name="partner_id"/>
+                <field name="expiration_date"/>
+                <field name="serie_entidad"/>
+                <field name="serie_emision"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_account_auth_form" model="ir.ui.view">
+        <field name="name">account.auth.form</field>
+        <field name="model">account.authorisation</field>
+        <field name="arch" type="xml">
+            <form string="Autorizaciones SRI">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="is_electronic"/>
+                            <field name="type_id" widget="selection"/>
+                            <field name="in_type"/>
+                            <field name="partner_id" attrs="{'invisible': [('in_type','=','interno')]}" domain="[('supplier_rank','>',1)]"/>
+                            <field name="sequence_id"/>
+                        </group>
+                        <group>
+                            <field name="name" attrs="{'invisible': [('is_electronic','=',True)], 'required': [('is_electronic','=',False)]}"/>
+                            <field name="expiration_date"
+                                   attrs="{'required': [('is_electronic','!=',True)], 'invisible': [('is_electronic','=',True)]}"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <label string="Establecimiento" for="serie_entidad"/>
+                            <div>
+                                <field name="serie_entidad" class="oe_inline" placeholder="001"/> -
+                                <field name="serie_emision" placeholder="001"/>
+                            </div>
+                        </group>
+                        <group>
+                            <label string="Secuencia de Comprobante" for="num_start"
+                                   attrs="{'invisible': [('is_electronic','=',True)], 'required': [('is_electronic','=',False)]}"/>
+                            <div>
+                                <field name="num_start" class="oe_inline"
+                                       attrs="{'invisible': [('is_electronic','=',True)], 'required': [('is_electronic','=',False)]}"/> -
+                                <field name="num_end" class="oe_inline"
+                                       attrs="{'invisible': [('is_electronic','=',True)], 'required': [('is_electronic','=',False)]}"/>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACCOUNT ATS -->
+
+    <!-- Tree View -->
+    <record id="view_account_ats_doc_tree" model="ir.ui.view">
+        <field name="name">account.ats.doc.tree</field>
+        <field name="model">account.ats.doc</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Comprobantes Autorizados" editable="top">
+                <field name="code" select="1"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_account_ats_doc_form" model="ir.ui.view">
+        <field name="name">account.ats.doc.form</field>
+        <field name="model">account.ats.doc</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Tipo de Comprobante Autorizado">
+                <group col="4" colspan="4">
+                    <field name="code" required="1"/>
+                    <field name="name"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+
+     <!-- ACCOUNT ATS SUSTENTO-->
+
+    <!-- Tree View -->
+    <record id="view_account_ats_sustento_tree" model="ir.ui.view">
+        <field name="name">account.ats.sustento.tree</field>
+        <field name="model">account.ats.sustento</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Sustento del Comprobante" editable="top">
+                <field name="code" select="1"/>
+                <field name="type"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_account_ats_sustent_form" model="ir.ui.view">
+        <field name="name">account.ats.sustento.form</field>
+        <field name="model">account.ats.sustento</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Sustento del Comprobante">
+                <group col="4" colspan="4">
+                    <field name="code" required="1"/>
+                    <field name="type"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACTIONS -->
+
+    <record id="action_account_ats_doc" model="ir.actions.act_window">
+        <field name="name">Comprobantes Autorizados</field>
+        <field name="res_model">account.ats.doc</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_account_ats_sustent" model="ir.actions.act_window">
+        <field name="name">Sustento del Comprobante</field>
+        <field name="res_model">account.ats.sustento</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- MENUS -->
+
+    <menuitem action="action_account_ats_sustent"
+              id="menu_action_account_ats_sustento"
+              parent="account.account_account_menu"/>
+
+    <menuitem action="action_account_ats_doc"
+              id="menu_action_account_ats_doc"
+              parent="account.account_account_menu"/>
+
+</odoo>

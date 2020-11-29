@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+         <!-- ACCOUNT MOVE -->
+    <!-- TREE VIEW -->
+    <record id="view_account_invoice_tree22" model="ir.ui.view">
+        <field name="name">view.account.invoice.tree22</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_in_invoice_tree"/>
+        <field name="arch" type="xml">
+<!--                <xpath expr="//field[@name='number']" position="replace">-->
+<!--                    <field name="invoice_number"/>-->
+<!--                </xpath>-->
+            <xpath expr="//field[@name='amount_total_signed']" position="before">
+                <field name="amount_vat_cero" sum="Total Base 0"/>
+                <field name="amount_vat" sum="Total Base 12"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_invoice_form" model="ir.ui.view">
+        <field name="name">account.invoice.reference.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_draft'][last()]" position="after">
+                <button name="print_move"
+                        string="Comprobante"
+                        type="object"
+                        states="open,paid"
+                        class="btn btn-primary"
+                        icon="fa-print"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_date']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='fiscal_position_id']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_date']" position="after">
+                <field name="retention_id"/>
+                <field name="has_retention" invisible="1"/>
+                <label string="Nro. de Retención"
+                       for="withholding_number"
+                       attrs="{'invisible': [('has_retention','=',False)]}"/>
+                <div attrs="{'invisible': [('has_retention','=',False)]}">
+                    <field name="create_retention_type" class="oe_inline"/>
+                    <field name="withholding_number"
+                           class="oe_inline"
+                           attrs="{'invisible': [('create_retention_type','=','auto')]}"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='amount_untaxed']" position="replace">
+                <field name="amount_pay" string="Total" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="amount_tax_retention"/>
+                <field name="amount_total" string="Total a Pagar" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ACTIONS -->
+<!--        <record id="act_window_retention" model="ir.actions.act_window">-->
+<!--            <field name="name">Ver Retención</field>-->
+<!--            <field name="src_model">account.move</field>-->
+<!--            <field name="res_model">account.retention</field>-->
+<!--            <field name="view_mode">tree,form</field>-->
+<!--            <field name="domain">[('invoice_id','=',active_id)]</field>-->
+<!--        </record>-->
+
+        <record id="action_liq_purchase_tree" model="ir.actions.act_window">
+            <field name="name">Liquidaciones de Compra</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="account.view_in_invoice_tree"/>
+            <field name="context">{'move_type':'liq_purchase', 'journal_type': 'purchase'}</field>
+            <field name="domain">[('move_type','=','liq_purchase')]</field>
+        </record>
+
+    <!-- MENUS -->
+
+        <menuitem action="action_liq_purchase_tree"
+                  id="menu_action_liq_purchase"
+                  parent="account.menu_finance_payables"/>
+
+
+</odoo>
